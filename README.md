@@ -1,41 +1,52 @@
-# 🌦 Weather App (Flask Full Stack)
+# 🌦 Weather App (Flask)
 
-A responsive weather web application built using Flask that fetches real-time weather data from the OpenWeatherMap API. The app allows users to search for any city, view current weather conditions, and check a short-term forecast with a clean and user-friendly interface.
+A modern, feature-rich weather application built using **Python Flask**, **OpenWeather API**, and **Chart.js**.  
+This project includes real-time weather, animations, history tracking, and a beautiful UI with dark/light mode.
 
 ---
 
-## 🚀 Features
+## 🚀 Live Demo
+👉 Add your deployed Render link here  
+Example:  
+https://your-app.onrender.com
 
-* 🌍 Real-time weather data by city name
-* 📊 5-day weather forecast
-* 🔍 Search history (last 10 searches)
-* 🖱 Clickable history for quick search
-* 🎨 Responsive UI using Bootstrap
-* ⚠️ Error handling for invalid inputs
+---
+
+## 📸 Features
+
+✅ Real-time weather search (by city)  
+✅ Auto location weather detection  
+✅ 5-day weather forecast  
+✅ Temperature chart (Chart.js)  
+✅ Weather animations (rain, clouds, clear sky)  
+✅ Dark / Light mode toggle 🌙  
+✅ Recent search history (last 10 cities)  
+✅ Hover effects on buttons & cards  
+✅ Stylish UI with responsive design  
+✅ Weather icons from OpenWeather  
 
 ---
 
 ## 🛠 Tech Stack
 
-* **Backend:** Python (Flask)
-* **Frontend:** HTML, CSS, Bootstrap
-* **API:** OpenWeatherMap API
-* **Others:** Requests, JSON handling
+- **Frontend:** HTML, CSS, Bootstrap, JavaScript  
+- **Backend:** Python (Flask)  
+- **API:** OpenWeather API  
+- **Charts:** Chart.js  
+- **Deployment:** Render  
 
 ---
 
 ## 📂 Project Structure
 
 ```
-weather_app/
-│
-├── app.py
-├── history.txt
-│
-├── templates/
+weather-app/
+│── app.py
+│── requirements.txt
+│── history.txt
+│── templates/
 │   └── index.html
-│
-├── static/
+│── static/
 │   └── style.css
 ```
 
@@ -43,30 +54,59 @@ weather_app/
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone the Repository
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/mayurnikhare/weather_app.git
-cd weather_app
-```
-
-### 2️⃣ Install Dependencies
-
-```bash
-pip install flask requests
-```
-
-### 3️⃣ Add API Key
-
-Open `app.py` and replace:
-
-```python
-API_KEY = "e7cde81c3a0cb242fe3960680cb1b8ea"
+git clone https://github.com/your-username/weather-app.git
+cd weather-app
 ```
 
 ---
 
-### 4️⃣ Run the Application
+### 2. Create virtual environment
+
+```bash
+python -m venv venv
+```
+
+Activate:
+
+**Windows:**
+
+```bash
+venv\Scripts\activate
+```
+
+**Mac/Linux:**
+
+```bash
+source venv/bin/activate
+```
+
+---
+
+### 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### 4. Add your API key
+
+In `app.py`:
+
+```python
+API_KEY = "YOUR_OPENWEATHER_API_KEY"
+```
+
+👉 Get API key from:  
+https://openweathermap.org/api
+
+---
+
+### 5. Run the app
 
 ```bash
 python app.py
@@ -75,17 +115,83 @@ python app.py
 Open in browser:
 
 ```
-http://127.0.0.1:5000/
+http://127.0.0.1:5000
+```
 
 ---
 
-## 🔮 Future Improvements
+## 🌐 Deployment (Render)
 
-* 📍 Auto-detect user location
-* 🌙 Dark mode toggle
-* 📊 Graphs for temperature trends
-* 🗄 Database integration (SQLite)
-* 🌐 Deploy live on cloud
+1. Push code to GitHub  
+2. Go to 👉 Render  
+3. Click **New Web Service**  
+4. Connect your GitHub repo  
+5. Set:
+
+```
+Build Command: pip install -r requirements.txt
+Start Command: gunicorn app:app
+```
+
+6. Click **Deploy**
+
+---
+
+## 📊 Features Explained
+
+### 🌡 Weather Data
+- Temperature  
+- Feels like  
+- Humidity  
+- Wind speed  
+- Weather condition  
+
+---
+
+### 📈 Chart
+- Displays temperature trend using Chart.js  
+
+---
+
+### 🌦 Animations
+- Rain animation for rainy weather  
+- Cloud & clear sky effects  
+- Smooth UI transitions  
+
+---
+
+### 🌙 Dark Mode
+- Toggle button at top-right  
+- Changes UI theme dynamically  
+
+---
+
+### 🔍 History Feature
+- Stores last 10 searched cities  
+- Click to quickly reload weather  
+
+---
+
+## 🧠 Future Improvements
+
+- 🌍 Auto-location weather (fully integrated UI)  
+- ⭐ Favorite cities system  
+- 🗄 Database instead of file storage  
+- 📱 Mobile app version  
+- 📊 Advanced analytics charts  
+
+---
+
+## ⚠️ Important Notes
+
+Make sure `requirements.txt` includes:
+
+```
+Flask
+requests
+gunicorn
+Flask-SQLAlchemy
+```
 
 ---
 
@@ -95,12 +201,6 @@ http://127.0.0.1:5000/
 
 ---
 
-## ⭐ Contributing
+## ⭐ If you like this project
 
-Feel free to fork this project and improve it. Contributions are welcome!
-
----
-
-## 📜 License
-
-This project is open-source and available under the MIT License.
+Give a ⭐ on GitHub and feel free to contribute!
