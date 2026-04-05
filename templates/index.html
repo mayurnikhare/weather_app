@@ -5,76 +5,182 @@
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
-<body>
+<body id="body">
+
+<!-- 🌧 Rain -->
+<div id="rain-container"></div>
+
+<!-- 🌙 Toggle Button -->
+<div style="position: fixed; top: 15px; right: 15px; z-index: 999;">
+    <button onclick="toggleTheme()" class="btn btn-dark" id="themeBtn">
+        🌙 Toggle Mode
+    </button>
+</div>
 
 <div class="container text-center mt-5">
 
-    <h1 class="mb-4">🌦 Weather App</h1>
+    <h1>🌦 Weather App</h1>
 
-    <!-- Form -->
-    <form method="POST">
+    <form method="POST" class="d-flex justify-content-center gap-2">
         <input type="text" name="city" placeholder="Enter city" required>
         <button class="btn btn-warning">Search</button>
     </form>
 
-    <!-- Error -->
     {% if error %}
         <p class="text-danger mt-3">{{ error }}</p>
     {% endif %}
 
-    <!-- Weather -->
     {% if weather %}
-    <div class="card mt-4 p-4 shadow">
+    <div class="card mt-4 p-4 shadow-lg">
 
-        <h2>{{ weather.city }}</h2>
+        <div class="city-box">
+            <h2>{{ weather.city }}</h2>
+        </div>
 
-        <div class="text-center">
-    <img class="d-block mx-auto mb-3" 
-     src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png" 
-     width="80">
-</div>
+        <img class="weather-icon"
+             src="https://openweathermap.org/img/wn/{{ weather.icon }}@2x.png">
 
         <p>🌡 {{ weather.temperature }} °C</p>
-        <p>🤗 Feels Like: {{ weather.feels_like }} °C</p>
-        <p>💧 Humidity: {{ weather.humidity }}%</p>
-        <p>💨 Wind: {{ weather.wind }} m/s</p>
-        <p class="text-capitalize">{{ weather.condition }}</p>
-        <p class="text-muted">{{ weather.time }}</p>
+        <p>🤗 {{ weather.feels_like }} °C</p>
+        <p>💧 {{ weather.humidity }}%</p>
+        <p>💨 {{ weather.wind }} m/s</p>
 
+        <p>{{ weather.condition }}</p>
+        <p>{{ weather.time }}</p>
     </div>
     {% endif %}
 
-    <!-- Forecast -->
+    <!-- 📊 Chart -->
     {% if weather and weather.forecast %}
     <div class="mt-4">
-        <h4>📊 5-Day Forecast</h4>
+        <canvas id="tempChart"></canvas>
+    </div>
+    {% endif %}
 
+    <!-- 📅 Forecast -->
+    {% if weather and weather.forecast %}
+    <div class="d-flex justify-content-center flex-wrap mt-3">
         {% for f in weather.forecast %}
-            <p>{{ f.time }} → {{ f.temp }}°C</p>
+        <div class="forecast-box">
+            <p>{{ f.time }}</p>
+            <strong>{{ f.temp }}°C</strong>
+        </div>
         {% endfor %}
     </div>
     {% endif %}
 
-    <!-- History -->
-   {% if history %}
-<div class="mt-4">
-    <h4>🔍 Search History</h4>
+    <!-- ⭐ History -->
+    {% if history %}
+    <div class="mt-4 mb-5">
+        <h4>🔍 History</h4>
 
-    {% for city in history %}
+        {% for item in history %}
         <form method="POST" style="display:inline;">
-            <input type="hidden" name="city" value="{{ city }}">
-            <button class="badge bg-secondary m-1 border-0">
-                {{ city }}
+            <input type="hidden" name="city" value="{{ item.city }}">
+            <button class="badge bg-secondary m-1 history-btn">
+                {{ item.city }}
             </button>
         </form>
-    {% endfor %}
+        {% endfor %}
+    </div>
+    {% endif %}
 
 </div>
+
+<!-- 🌙 TOGGLE SCRIPT -->
+<script>
+let isDark = false;
+
+function toggleTheme() {
+    const body = document.getElementById("body");
+    const btn = document.getElementById("themeBtn");
+
+    isDark = !isDark;
+
+    if (isDark) {
+        body.classList.add("dark-mode");
+        btn.innerHTML = "☀ Light Mode";
+    } else {
+        body.classList.remove("dark-mode");
+        btn.innerHTML = "🌙 Dark Mode";
+    }
+}
+</script>
+
+<!-- 🌧 RAIN -->
+<script>
+function createRain() {
+    const container = document.getElementById("rain-container");
+    container.innerHTML = "";
+
+    for (let i = 0; i < 150; i++) {
+        let drop = document.createElement("div");
+        drop.className = "raindrop";
+
+        drop.style.left = Math.random() * 100 + "vw";
+        drop.style.animationDuration = (0.2 + Math.random() * 0.5) + "s";
+
+        container.appendChild(drop);
+    }
+}
+
+function updateWeatherTheme(condition) {
+    const body = document.getElementById("body");
+
+    // ❗ ONLY remove weather classes (NOT dark-mode)
+    body.classList.remove("rain", "clouds", "clear");
+
+    document.getElementById("rain-container").innerHTML = "";
+
+    if (!condition) return;
+
+    condition = condition.toLowerCase();
+
+    if (condition.includes("rain")) {
+        body.classList.add("rain");
+        createRain();
+    } else if (condition.includes("cloud")) {
+        body.classList.add("clouds");
+    } else if (condition.includes("clear")) {
+        body.classList.add("clear");
+    }
+}
+
+window.onload = function () {
+
+    {% if weather %}
+        updateWeatherTheme("{{ weather.condition }}");
+    {% endif %}
+};
+</script>
+
+<!-- 📊 CHART -->
+{% if weather and weather.forecast %}
+<script>
+const labels = {{ weather.forecast | map(attribute='time') | list | tojson }};
+const temps = {{ weather.forecast | map(attribute='temp') | list | tojson }};
+
+new Chart(document.getElementById("tempChart"), {
+    type: "line",
+    data: {
+        labels: labels,
+        datasets: [{
+            label: "Temperature (°C)",
+            data: temps,
+            borderWidth: 2
+        }]
+    }
+});
+</script>
 {% endif %}
-
-</div>
 
 </body>
 </html>
